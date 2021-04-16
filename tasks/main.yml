@@ -1,0 +1,65 @@
+---
+- name: 'Resolve platform specific vars'
+  include_vars: '{{ item }}'
+  with_first_found:
+    - files:
+        - '{{ ansible_distribution }}-{{ ansible_distribution_release }}.yml'
+        - '{{ ansible_distribution }}.yml'
+        - '{{ ansible_os_family }}.yml'
+      skip: true
+      paths:
+        - '{{ role_path }}/vars'
+
+
+- name: 'Check if {{ helm_exe }} is installed'
+  stat:
+    path: '{{ helm_exe }}'
+  register: helm_installed
+
+
+- block:
+  - name: 'Create temporary download directory'
+    ansible.builtin.tempfile:
+      state: directory
+      suffix: helm
+    register: helm_download_dir
+
+  - name: 'Download {{ helm_url }} to {{ helm_download_dir.path }}/{{ helm_archive }}'
+    get_url:
+      url: '{{ helm_url }}'
+      dest: '{{ helm_download_dir.path }}/{{ helm_archive }}'
+      checksum: '{{ helm_checksum }}'
+
+  - name: 'Ensure gnu-tar macosx package is present'
+    community.general.homebrew:
+      name: gnu-tar
+      state: present
+    when: ansible_os_family == 'Darwin'
+
+  - name: 'Extract {{ helm_download_dir.path }}/{{ helm_archive }}'
+    ansible.builtin.unarchive:
+      src: '{{ helm_download_dir.path }}/{{ helm_archive }}'
+      dest: '{{ helm_download_dir.path }}'
+      remote_src: yes
+
+  - name: 'Ensure {{ helm_install_dir }} exists'
+    ansible.builtin.file:
+      path: '{{ helm_install_dir }}'
+      state: directory
+      mode: 0755
+
+  - name: 'Copy {{ helm_download_dir.path }}/helm to {{ helm_exe }}'
+    ansible.builtin.copy:
+      src: '{{ helm_download_dir.path }}/helm'
+      dest: '{{ helm_exe }}'
+      remote_src: yes
+      mode: 0755
+
+  when: helm_installed.stat.exists is false
+
+
+- name: 'Link {{ helm_link }} to {{ helm_exe }}'
+  file:
+    src: '{{ helm_exe }}'
+    dest: '{{ helm_link }}'
+    state: link

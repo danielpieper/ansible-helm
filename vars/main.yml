@@ -1,0 +1,7 @@
+---
+helm_exe: '{{ helm_install_dir }}/helm-{{ helm_ver }}'
+helm_link: '{{ helm_install_dir }}/helm'
+helm_platform: '{{ helm_os }}-{{ helm_arch }}'
+helm_archive: 'helm-v{{ helm_ver }}-{{ helm_platform }}.{{ helm_ext }}'
+helm_url: '{{ helm_mirror }}/{{ helm_archive }}'
+helm_checksum: '{{ helm_checksums[helm_ver][helm_platform] }}'

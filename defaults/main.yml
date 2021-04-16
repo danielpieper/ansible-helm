@@ -1,0 +1,12 @@
+---
+helm_ver: '3.5.4'
+helm_mirror: 'https://get.helm.sh/'
+helm_os: 'linux'
+helm_arch: 'amd64'
+helm_ext: 'tar.gz'
+helm_install_dir: '{{ ansible_env.HOME }}/.local/bin'
+
+helm_checksums:
+  3.5.4:
+    linux.amd64: 'sha256:a8ddb4e30435b5fd45308ecce5eaad676d64a5de9c89660b56face3fe990b318'
+    darwin.amd64: 'sha256:072c40c743d30efdb8231ca03bab55caee7935e52175e42271a0c3bc37ec0b7b'
