@@ -1,6 +1,6 @@
 ---
 helm_ver: '3.5.4'
-helm_mirror: 'https://get.helm.sh/'
+helm_mirror: 'https://get.helm.sh'
 helm_os: 'linux'
 helm_arch: 'amd64'
 helm_ext: 'tar.gz'
