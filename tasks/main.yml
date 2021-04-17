@@ -50,7 +50,7 @@
 
   - name: 'Copy {{ helm_download_dir.path }}/helm to {{ helm_exe }}'
     ansible.builtin.copy:
-      src: '{{ helm_download_dir.path }}/helm'
+      src: '{{ helm_download_dir.path }}/{{ helm_platform }}/helm'
       dest: '{{ helm_exe }}'
       remote_src: yes
       mode: 0755
